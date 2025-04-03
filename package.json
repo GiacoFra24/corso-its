@@ -9,9 +9,12 @@
     "prisma:migrate:dev": "npx prisma migrate dev --name latest",
     "dev:docker": "docker-compose -f docker-compose.yml up",
     "dev:docker:build": "docker-compose -f docker-compose.yml up --build",
-    "dev": "npm run prisma:migrate:dev && npm run prisma:generate && npx tsx watch src/index.ts",
+    "dev": "npm run prisma:migrate:dev && npm run prisma:generate && npx prisma db seed && npx tsx watch src/index.ts",
     "lint": "eslint ./src",
     "test": "docker-compose -f docker-compose.yml up --build && npx prisma migrate dev --name latest"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seeder/seeder.ts"
   },
   "dependencies": {
     "@koa/router": "^13.1.0",

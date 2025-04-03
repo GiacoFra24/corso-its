@@ -6,6 +6,7 @@ import { validationError } from "../utilities/errorsHandler";
 import { raceAttrModExsist } from "../middlewares/middlewareRaceAttrMod";
 import { ZodError } from "zod";
 import { authUser, userRole } from "../middlewares/middlewareAuth";
+import { raceExists } from "../middlewares/middlewareRace";
 
 const router = new Router();
 
@@ -219,6 +220,40 @@ router.delete(
       } else {
         ctx.body = "Generic Error: " + error;
       }
+    }
+  }
+);
+
+// GET /race/:idRace/attr get a race with relative attributes
+router.get(
+  "/race/:idRace/attr",
+  authUser,
+  raceExists,
+  (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
+  async (ctx) => {
+    const idRace = ctx.params.idRace;
+
+    try {
+      const race = await prisma.raceAttrMod.findMany({
+        where: {
+          idRace,
+        },
+        include: {
+          attribute: true,
+        },
+      });
+
+      if (!race) {
+        ctx.status = 404;
+        ctx.body = { error: "Race not found" };
+        return;
+      } else {
+        ctx.status = 201;
+        ctx.body = race;
+      }
+    } catch (error) {
+      ctx.status = 500;
+      ctx.body = { error: `Unable to find the requested race information` };
     }
   }
 );

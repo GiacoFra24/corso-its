@@ -6,6 +6,7 @@ import { ZodError } from "zod";
 import { validationError } from "../utilities/errorsHandler";
 import { classSkillModExists } from "../middlewares/middlewareClassSkillMod";
 import { authUser, userRole } from "../middlewares/middlewareAuth";
+import { classExists } from "../middlewares/middlewareClass";
 
 const router = new Router();
 
@@ -183,6 +184,40 @@ router.delete(
     } catch (error) {
       ctx.status = 500;
       ctx.body = "Error: " + error;
+    }
+  }
+);
+
+// GET /class/:idClass/skill: get single class with relative skills
+router.get(
+  "/class/:idClass/skill",
+  authUser,
+  classExists,
+  (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
+  async (ctx) => {
+    const idClass = ctx.params.idClass;
+
+    try {
+      const clazz = await prisma.classSkillMod.findMany({
+        where: {
+          idClass,
+        },
+        include: {
+          skill: true,
+        },
+      });
+
+      if (!clazz) {
+        ctx.status = 404;
+        ctx.body = { error: "class not found" };
+        return;
+      } else {
+        ctx.status = 201;
+        ctx.body = clazz;
+      }
+    } catch (error) {
+      ctx.status = 500;
+      ctx.body = { error: "Unable to find the requested class information" };
     }
   }
 );
