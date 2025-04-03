@@ -11,6 +11,9 @@ import bodyParser from "koa-bodyparser";
 import userRouter from "./routes/user";
 import meRouter from "./routes/me";
 import classSkillModRoutes from "./routes/classSkillMod";
+import raceAttrsRoutes from "./routes/raceAttrs";
+import attrSkillsRoutes from "./routes/attrSkills";
+import classSkillsRoutes from "./routes/classSkills"
 
 // Init "dotenv"
 dotenv.config();
@@ -34,6 +37,10 @@ app.use(userRouter.routes()).use(userRouter.allowedMethods());
 app.use(raceRoute.routes()).use(raceRoute.allowedMethods());
 app.use(meRouter.routes()).use(meRouter.allowedMethods());
 app.use(router.routes()).use(router.allowedMethods());
+app.use(raceAttrsRoutes.routes()).use(raceAttrsRoutes.allowedMethods());
+app.use(attrSkillsRoutes.routes()).use(attrSkillsRoutes.allowedMethods());
+app.use(classSkillsRoutes.routes()).use(classSkillsRoutes.allowedMethods());
+
 
 app.listen(process.env.APP_PORT || 3000, () => {
   console.log(
