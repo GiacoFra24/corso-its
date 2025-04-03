@@ -15,13 +15,12 @@ router.get(
   authUser, raceExists,
   (ctx, next) => userRole(ctx, next, USER_ROLE.GUEST),
   async (ctx) => {
-    ctx.request.body = raceSchema.parse(ctx.request.body);
-    const data = ctx.request.body as Race;
+    const id = ctx.params.id;
 
     try {
       const raceAttrs = await prisma.raceAttrMod.findMany({
         where: {
-          idRace: data.id
+          idRace: id
         },
         include: {
           attribute: true,

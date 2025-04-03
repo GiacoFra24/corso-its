@@ -15,13 +15,12 @@ router.get(
   authUser, classExists,
   (ctx, next) => userRole(ctx, next, USER_ROLE.GUEST),
   async (ctx) => {
-    ctx.request.body = classSchema.parse(ctx.request.body);
-    const data = ctx.request.body as Class;
+    const id = ctx.params.idClass
 
     try {
       const classSkills = await prisma.classSkillMod.findMany({
         where: {
-          idClass: data.id
+          idClass: id
         },
         include: {
           skill: true,

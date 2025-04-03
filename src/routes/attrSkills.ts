@@ -16,13 +16,12 @@ router.get(
   (ctx, next) => userRole(ctx, next, USER_ROLE.GUEST),
 
   async (ctx) => {
-    ctx.request.body = attributeSchema.parse(ctx.request.body);
-    const data = ctx.request.body as Attribute;
+    const id = ctx.params.id
     
     try {
       const attrSkills = await prisma.skill.findMany({
         where: {
-          id: data.id
+          id: id
         },
         include: {
           attribute: true
